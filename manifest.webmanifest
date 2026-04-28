@@ -1,1 +1,17 @@
-{"name":"PUBG感度調整ツール","short_name":"PUBG感度","start_url":"./","scope":"./","display":"standalone","background_color":"#eef2ff","theme_color":"#312e81","icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{
+  "name": "PUBG感度調整ツール iPad版",
+  "short_name": "PUBG感度",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef2ff",
+  "theme_color": "#312e81",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

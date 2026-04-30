@@ -178,13 +178,14 @@ function normalize(){const r=distanceRange();distance.min=r.min;distance.max=r.m
 function applyFingerGyroBase(){
  const fb=FINGER_BASE[String(settings.fingerMode)] && FINGER_BASE[String(settings.fingerMode)][settings.gyroOn];
  if(!fb)return;
+ settings.weapon="AR556";
  settings.redCam=fb.cam;
  settings.redAds=fb.ads;
  settings.redGyroCam=fb.gcam;
  settings.redGyro=fb.gyro;
  settings.finger=fb.finger;
  const mode=settings.gyroOn==="OFF"?"off":"on";
- settings.recoil=WEAPONS[settings.weapon][mode].recoil;
+ settings.recoil=WEAPONS.AR556[mode].recoil;
  if(settings.gyroOn==="OFF")settings.finger=100;
 }
 function setBaseFromWeapon(k=settings.weapon,m=currentMode()){

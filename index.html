@@ -72,6 +72,32 @@ td:first-child{background:#f8fafc;font-weight:900}
 .refModeTitle:before{content:"";width:10px;height:10px;border-radius:50%;background:#cbd5e1}
 .activeRef .refModeTitle:before{background:var(--accent-color,#ff7a18);box-shadow:0 0 0 4px rgba(255,122,24,.18)}
 
+
+.stepControl{display:flex;align-items:center;gap:6px}
+.stepBtns{display:flex;flex-direction:column;gap:4px}
+.stepBtn{width:28px;height:26px;border:1px solid #c7d2fe;border-radius:8px;background:#fff;font-weight:950;line-height:1;padding:0;color:#111827}
+.stepBtn:active{transform:scale(.96)}
+.numBox input{appearance:textfield;-moz-appearance:textfield}
+.numBox input::-webkit-outer-spin-button,.numBox input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+
+.btn.on,.btn.primary{outline:2px solid rgba(255,255,255,.35);outline-offset:-3px}
+.buttonGrid .btn{transition:transform .12s ease, box-shadow .12s ease, background .12s ease}
+.buttonGrid .btn:active{transform:scale(.98)}
+
+
+/* ②基準値 UI改善 */
+.numBox{align-items:flex-start;flex-direction:column}
+.numBox b{font-size:14px}
+.stepControl{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 30px;align-items:center;gap:6px}
+.stepControl input{width:100%!important;max-width:none!important;min-width:0;font-size:22px;padding:10px 8px}
+.stepBtns{width:30px}
+.stepBtn{width:30px;height:25px}
+@media(max-width:600px){
+  .grid4{grid-template-columns:repeat(2,1fr)}
+  .stepControl input{font-size:20px}
+}
+
 </style>
 </head>
 <body style="--accent-color:#4f46e5">
@@ -87,8 +113,8 @@ td:first-child{background:#f8fafc;font-weight:900}
 <section class="hero">
   <div class="eyebrow">PRACTICAL TUNING</div>
   <h1>FPS感度調整ツール タブレット版</h1>
-  <p>基本感度を基準に、その他各種武器に関しては③詳細設定で調整します。</p>
-  <div class="noticeHero">※あくまでも参考値です。端末・プレイスタイル・指配置・ジャイロの使い方によって最適値は変わります。必ず自分に合わせて微調整してください。</div>
+  <p></p>
+  <div class="noticeHero">端末・プレイスタイル・指配置・ジャイロの使い方によって最適値は変わります。必ず自分に合わせて微調整してください。</div>
   <div class="statusPills">
     <span class="pill">ジャイロON/OFF対応</span><span class="pill">実戦ADS補正</span><span class="pill">距離自動補正</span>
   </div>
@@ -100,8 +126,8 @@ td:first-child{background:#f8fafc;font-weight:900}
 
 <section id="calc" class="page">
   <section class="card">
-    <div class="cardHead"><h2>① 指本数・プリセット（参考基準値数値：M416）</h2><button class="btn" onclick="resetAll()">リセット</button></div>
-    <p class="notice">基準はAR（M416）で数値設定してあります。尚、その他各種武器に関しては③詳細設定で調整します。</p>
+    <div class="cardHead"><h2>① 指本数・プリセット</h2><button class="btn" onclick="resetAll()">リセット</button></div>
+    <p class="notice">FPS感度調整ツールは、あくまでも参考値として感度調整しています。各種感度調整は③詳細設定で調整します。</p>
     <div class="grid2">
       <div class="box"><b>指本数</b><div class="buttonGrid" id="fingerButtons" style="margin-top:10px"></div><p id="fingerModeNote" style="display:none"></p></div>
       <div class="box"><b>ジャイロON/OFF</b><div class="buttonGrid" id="gyroButtons" style="margin-top:10px"></div><p class="help">ON/OFFで基準値を自動変更。OFFは指操作比率100固定。</p></div>
@@ -111,18 +137,18 @@ td:first-child{background:#f8fafc;font-weight:900}
 
   <section class="card">
     <h2>② 基準値</h2><p class="help">SRを選択した場合は4倍スコープ基準値として計算します。</p>
-    <p class="help">自分で合わせた感度を入力すると自動で計算されます。SR選択時は4倍スコープ基準値として反映されます。</p>
+    <p class="help"></p>
     <div class="grid4">
-      <div class="numBox"><b>カメラ</b><input id="redCam" type="number"></div>
-      <div class="numBox"><b>ADS</b><input id="redAds" type="number"></div>
-      <div class="numBox"><b>ジャイロカメラ</b><input id="redGyroCam" type="number"></div>
-      <div class="numBox"><b>ジャイロ</b><input id="redGyro" type="number"></div>
+      <div class="numBox"><b>カメラ</b><div class="stepControl"><input id="redCam" type="number" inputmode="numeric" min="0" max="300" step="1"><div class="stepBtns"><button class="stepBtn" onclick="stepValue('redCam',1)" onpointerdown="startStepHold('redCam',1)" onpointerup="stopStepHold()" onpointerleave="stopStepHold()" onpointercancel="stopStepHold()" type="button">▲</button><button class="stepBtn" onclick="stepValue('redCam',-1)" onpointerdown="startStepHold('redCam',-1)" onpointerup="stopStepHold()" onpointerleave="stopStepHold()" onpointercancel="stopStepHold()" type="button">▼</button></div></div></div>
+      <div class="numBox"><b>ADS</b><div class="stepControl"><input id="redAds" type="number" inputmode="numeric" min="0" max="300" step="1"><div class="stepBtns"><button class="stepBtn" onclick="stepValue('redAds',1)" onpointerdown="startStepHold('redAds',1)" onpointerup="stopStepHold()" onpointerleave="stopStepHold()" onpointercancel="stopStepHold()" type="button">▲</button><button class="stepBtn" onclick="stepValue('redAds',-1)" onpointerdown="startStepHold('redAds',-1)" onpointerup="stopStepHold()" onpointerleave="stopStepHold()" onpointercancel="stopStepHold()" type="button">▼</button></div></div></div>
+      <div class="numBox"><b>ジャイロカメラ</b><div class="stepControl"><input id="redGyroCam" type="number" inputmode="numeric" min="0" max="400" step="1"><div class="stepBtns"><button class="stepBtn" onclick="stepValue('redGyroCam',1)" onpointerdown="startStepHold('redGyroCam',1)" onpointerup="stopStepHold()" onpointerleave="stopStepHold()" onpointercancel="stopStepHold()" type="button">▲</button><button class="stepBtn" onclick="stepValue('redGyroCam',-1)" onpointerdown="startStepHold('redGyroCam',-1)" onpointerup="stopStepHold()" onpointerleave="stopStepHold()" onpointercancel="stopStepHold()" type="button">▼</button></div></div></div>
+      <div class="numBox"><b>ジャイロ</b><div class="stepControl"><input id="redGyro" type="number" inputmode="numeric" min="0" max="400" step="1"><div class="stepBtns"><button class="stepBtn" onclick="stepValue('redGyro',1)" onpointerdown="startStepHold('redGyro',1)" onpointerup="stopStepHold()" onpointerleave="stopStepHold()" onpointercancel="stopStepHold()" type="button">▲</button><button class="stepBtn" onclick="stepValue('redGyro',-1)" onpointerdown="startStepHold('redGyro',-1)" onpointerup="stopStepHold()" onpointerleave="stopStepHold()" onpointercancel="stopStepHold()" type="button">▼</button></div></div></div>
     </div>
   </section>
 
   <section class="card">
     <div class="cardHead">
-      <h2>③ 詳細設定（武器各種）</h2>
+      <h2>③ 詳細設定（武器各種）</h2><p class="notice">端末・プレイスタイル・指配置・ジャイロの使い方によって最適値は変わります。必ず自分に合わせて微調整して確認してください。</p><p class="help"></p>
       
     </div>
     <div class="grid3">
@@ -140,12 +166,12 @@ td:first-child{background:#f8fafc;font-weight:900}
 <section id="guide" class="page hidden card">
 <h2>調整ルール</h2>
 <div class="grid2">
-  <div class="info"><b>2本指</b><p>感度で補う操作。ジャイロOFF時は指操作比率100で、カメラ・ADSを高めに調整。</p></div>
-  <div class="info"><b>3本指</b><p>親指操作に少し余裕が出るため、2本指より少し下げて安定寄り。</p></div>
-  <div class="info"><b>4本指</b><p>基準。指操作とジャイロのバランスが取りやすい。</p></div>
-  <div class="info"><b>5本指</b><p>多指操作で細かく補正しやすい。ADSは上げすぎず安定寄り。</p></div>
-  <div class="info"><b>6本指</b><p>上級向け。指で細かく操作できるため、ジャイロはやや低め。</p></div>
-  <div class="info"><b>上に跳ねる場合</b><p>反動を+1〜+5、ジャイロONならジャイロ+10〜20を目安に微調整。</p></div>
+  <div class="info"><b>シンプル感度（一括）</b><p>最初の土台です。ここから自分の端末・指配置に合わせて微調整します。</p></div>
+  <div class="info"><b>詳細設定：武器各種</b><p>AR（7.62）・LMG・SMG・DMR・SRは実戦向けの傾向値で計算します。</p></div>
+  <div class="info"><b>反動が強い武器</b><p>AR（7.62）とLMGはADSを高めにして押さえ込みやすくします。</p></div>
+  <div class="info"><b>反動が小さい武器</b><p>SMGはADSを上げすぎず、近距離で振り回しすぎない設定にします。</p></div>
+  <div class="info"><b>DMR</b><p>追いエイム・連続タップ用としてSRより高めに設定します。</p></div>
+  <div class="info"><b>SR</b><p>単発精密用として低めに設定します。</p></div>
 </div>
 </section>
 <section id="copy" class="page hidden card"><h2>コピー用</h2><textarea id="copyArea" class="copyArea" readonly></textarea></section>
@@ -154,9 +180,9 @@ td:first-child{background:#f8fafc;font-weight:900}
 </main>
 
 <script>
-const WEAPONS = {"AR556": {"name": "AR（5.56）", "base": "M416基準 / ホロ・レッドドット", "on": {"cam": 58, "ads": 52, "gcam": 310, "gyro": 315, "recoil": 58}, "off": {"cam": 60, "ads": 58, "gcam": 0, "gyro": 0, "recoil": 58}, "adj": {"cam": 0, "ads": 0, "gyro": 0}}, "AR762": {"name": "AR（7.62）", "base": "ベリル基準 / ホロ・レッドドット", "on": {"cam": 55, "ads": 56, "gcam": 320, "gyro": 340, "recoil": 65}, "off": {"cam": 57, "ads": 68, "gcam": 0, "gyro": 0, "recoil": 65}, "adj": {"cam": -3, "ads": 0, "gyro": 25}}, "SMG": {"name": "SMG", "base": "近距離基準 / ホロ・レッドドット", "on": {"cam": 66, "ads": 54, "gcam": 320, "gyro": 330, "recoil": 50}, "off": {"cam": 68, "ads": 58, "gcam": 0, "gyro": 0, "recoil": 50}, "adj": {"cam": 6, "ads": 0, "gyro": 20}}, "LMG": {"name": "LMG", "base": "継続射撃基準 / ホロ・レッドドット", "on": {"cam": 54, "ads": 64, "gcam": 330, "gyro": 350, "recoil": 68}, "off": {"cam": 56, "ads": 74, "gcam": 0, "gyro": 0, "recoil": 68}, "adj": {"cam": -2, "ads": 0, "gyro": 18}}, "DMR": {"name": "DMR", "base": "SR平均値ベース / 反動はDMR基準", "on": {"cam": 49, "ads": 44, "gcam": 244, "gyro": 230, "recoil": 50}, "off": {"cam": 52, "ads": 55, "gcam": 0, "gyro": 0, "recoil": 50}, "adj": {"cam": 0, "ads": 0, "gyro": -8}}, "SR": {"name": "SR", "base": "4倍スコープ基準", "on": {"cam": 38, "ads": 32, "gcam": 195, "gyro": 180, "recoil": 45}, "off": {"cam": 40, "ads": 38, "gcam": 0, "gyro": 0, "recoil": 45}, "adj": {"cam": -10, "ads": -16, "gyro": -45}}};
+const WEAPONS = {"AR556": {"name": "AR（5.56）", "base": "実戦精度型 / M416・SCAR-L系", "on": {"cam": 54, "ads": 56, "gcam": 325, "gyro": 330, "recoil": 54}, "off": {"cam": 58, "ads": 66, "gcam": 0, "gyro": 0, "recoil": 54}, "adj": {"cam": -1, "ads": 0, "gyro": 8}}, "AR762": {"name": "AR（7.62）", "base": "実戦値 / ベリル・AK系", "on": {"cam": 58, "ads": 60, "gcam": 330, "gyro": 350, "recoil": 68}, "off": {"cam": 60, "ads": 72, "gcam": 0, "gyro": 0, "recoil": 68}, "adj": {"cam": 0, "ads": 0, "gyro": 20}}, "SMG": {"name": "SMG", "base": "実戦値 / 近距離追いエイム", "on": {"cam": 70, "ads": 56, "gcam": 315, "gyro": 325, "recoil": 48}, "off": {"cam": 72, "ads": 60, "gcam": 0, "gyro": 0, "recoil": 48}, "adj": {"cam": 4, "ads": -4, "gyro": 10}}, "LMG": {"name": "LMG", "base": "実戦値 / 継続射撃", "on": {"cam": 56, "ads": 68, "gcam": 340, "gyro": 360, "recoil": 72}, "off": {"cam": 58, "ads": 78, "gcam": 0, "gyro": 0, "recoil": 72}, "adj": {"cam": -1, "ads": 0, "gyro": 18}}, "DMR": {"name": "DMR", "base": "実戦値 / 追いエイム・連続タップ", "on": {"cam": 56, "ads": 54, "gcam": 280, "gyro": 275, "recoil": 52}, "off": {"cam": 58, "ads": 64, "gcam": 0, "gyro": 0, "recoil": 52}, "adj": {"cam": 0, "ads": 0, "gyro": -6}}, "SR": {"name": "SR", "base": "実戦値 / 4倍スコープ単発精密", "on": {"cam": 38, "ads": 32, "gcam": 200, "gyro": 185, "recoil": 45}, "off": {"cam": 40, "ads": 38, "gcam": 0, "gyro": 0, "recoil": 45}, "adj": {"cam": -10, "ads": -16, "gyro": -45}}};
 const NORMAL_SCOPES = [["TPPスコープなし", 1.83], ["FPPスコープなし", 1.67], ["ホロ・レッドドット", 1], ["2倍スコープ", 0.83], ["3倍スコープ", 0.67], ["4倍スコープ", 0.5], ["6倍スコープ", 0.33]];
-const AR556_SCOPES = NORMAL_SCOPES.concat([["8倍スコープ",0.17]]);
+const REFERENCE_SCOPES = NORMAL_SCOPES.concat([["8倍スコープ",0.17]]);
 const DMR_SCOPES = [["TPPスコープなし",1.65],["FPPスコープなし",1.52],["ホロ・レッドドット",1.00],["2倍スコープ",0.83],["3倍スコープ",0.67],["4倍スコープ",0.52],["6倍スコープ",0.38],["8倍スコープ",0.28]];
 const SR_SCOPES = [["TPPスコープなし",1.20],["FPPスコープなし",1.10],["4倍スコープ",1.00],["6倍スコープ",0.64],["8倍スコープ",0.44]];
 const FINGER_BASE = {"2": {"ON": {"cam": 66, "ads": 62, "gcam": 285, "gyro": 290, "finger": 90}, "OFF": {"cam": 68, "ads": 70, "gcam": 0, "gyro": 0, "finger": 100}}, "3": {"ON": {"cam": 61, "ads": 55, "gcam": 300, "gyro": 305, "finger": 88}, "OFF": {"cam": 64, "ads": 66, "gcam": 0, "gyro": 0, "finger": 100}}, "4": {"ON": {"cam": 58, "ads": 52, "gcam": 310, "gyro": 315, "finger": 70}, "OFF": {"cam": 62, "ads": 64, "gcam": 0, "gyro": 0, "finger": 100}}, "5": {"ON": {"cam": 56, "ads": 50, "gcam": 318, "gyro": 322, "finger": 76}, "OFF": {"cam": 60, "ads": 62, "gcam": 0, "gyro": 0, "finger": 100}}, "6": {"ON": {"cam": 54, "ads": 48, "gcam": 325, "gyro": 330, "finger": 82}, "OFF": {"cam": 58, "ads": 60, "gcam": 0, "gyro": 0, "finger": 100}}};
@@ -164,17 +190,18 @@ const DEFAULT_DISTANCE = 100;
 const NORMAL_HIGH = 120;
 const GYRO_HIGH = 330;
 const fingerModes = {2:{finger:100,cam:12,ads:12,gyro:-25,note:""},3:{finger:88,cam:8,ads:9,gyro:-12,note:""},4:{finger:70,cam:0,ads:0,gyro:0,note:""},5:{finger:76,cam:4,ads:5,gyro:-20,note:""},6:{finger:82,cam:6,ads:4,gyro:-30,note:""}};
+let isReferenceMode=false;
 let settings = {fingerMode:2,weapon:"AR556",gyroOn:"OFF",redCam:FINGER_BASE["2"]["OFF"].cam,redAds:FINGER_BASE["2"]["OFF"].ads,redGyroCam:0,redGyro:0,finger:100,recoil:WEAPONS.AR556.off.recoil,distance:DEFAULT_DISTANCE};
 let profiles=[];let currentValues=[];
 function clamp(n,min,max){return Math.max(min,Math.min(max,Math.round(Number(n)||0)));}
 function currentMode(){return settings.gyroOn==="OFF"?"off":"on";}
 function baseData(k=settings.weapon,m=currentMode()){return WEAPONS[k][m];}
-function scopesForWeapon(k=settings.weapon){return k==="SR"?SR_SCOPES:k==="DMR"?DMR_SCOPES:k==="AR556"?AR556_SCOPES:NORMAL_SCOPES;}
+function scopesForWeapon(k=settings.weapon){return isReferenceMode?REFERENCE_SCOPES:k==="SR"?SR_SCOPES:k==="DMR"?DMR_SCOPES:NORMAL_SCOPES;}
 function distanceRange(){return settings.weapon==="SR"?{min:50,max:200,def:100,ticks:[50,100,150,200]}:{min:10,max:150,def:DEFAULT_DISTANCE,ticks:[10,30,50,80,100,120,150]};}
 function level(v,t){if(t==="gyro"){if(v===0)return"off";if(v>=GYRO_HIGH)return"high";if(v<=80)return"low";return"good";}if(v>=NORMAL_HIGH)return"high";if(v<=15)return"low";return"good";}
 function statusText(v){return v==="high"?"高":v==="low"?"低":v==="off"?"OFF":"適";}
 function practicalAdsAdjust(){if(settings.weapon==="AR556")return settings.gyroOn==="ON"?0:3;if(settings.weapon==="AR762")return settings.gyroOn==="ON"?5:10;if(settings.weapon==="LMG")return settings.gyroOn==="ON"?5:10;if(settings.weapon==="SMG")return settings.gyroOn==="ON"?-3:-5;return 0;}
-function normalize(){const r=distanceRange();distance.min=r.min;distance.max=r.max;distance.step=10;if(settings.distance<r.min||settings.distance>r.max)settings.distance=r.def;settings.finger=clamp(settings.finger,0,100);settings.recoil=clamp(settings.recoil,40,80);settings.distance=clamp(settings.distance,r.min,r.max);["redCam","redAds"].forEach(k=>settings[k]=clamp(settings[k],1,200));["redGyroCam","redGyro"].forEach(k=>settings[k]=clamp(settings[k],0,400));if(settings.gyroOn==="OFF")settings.finger=100;}
+function normalize(){const r=distanceRange();distance.min=r.min;distance.max=r.max;distance.step=10;if(settings.distance<r.min||settings.distance>r.max)settings.distance=r.def;settings.finger=clamp(settings.finger,0,100);settings.recoil=clamp(settings.recoil,40,80);settings.distance=clamp(settings.distance,r.min,r.max);["redCam","redAds"].forEach(k=>settings[k]=clamp(settings[k],0,400));["redGyroCam","redGyro"].forEach(k=>settings[k]=clamp(settings[k],0,400));if(settings.gyroOn==="OFF")settings.finger=100;}
 function applyFingerGyroBase(){
  const fb=FINGER_BASE[String(settings.fingerMode)] && FINGER_BASE[String(settings.fingerMode)][settings.gyroOn];
  if(!fb)return;
@@ -184,8 +211,7 @@ function applyFingerGyroBase(){
  settings.redGyroCam=fb.gcam;
  settings.redGyro=fb.gyro;
  settings.finger=fb.finger;
- const mode=settings.gyroOn==="OFF"?"off":"on";
- settings.recoil=WEAPONS.AR556[mode].recoil;
+ settings.recoil=WEAPONS.AR556[settings.gyroOn==="OFF"?"off":"on"].recoil;
  if(settings.gyroOn==="OFF")settings.finger=100;
 }
 function setBaseFromWeapon(k=settings.weapon,m=currentMode()){
@@ -198,8 +224,15 @@ function setBaseFromWeapon(k=settings.weapon,m=currentMode()){
  if(k==="SR")settings.distance=100;
  if(m==="off")settings.finger=100;
 }
-function renderButtons(){presetButtons.innerHTML=`<button class="btn primary" onclick="applyReferenceBase()">参考基準値</button>`;fingerButtons.innerHTML=Object.keys(fingerModes).map(k=>`<button class="btn ${String(settings.fingerMode)===String(k)?"on":""}" onclick="setFingerMode(${k})">${k}本</button>`).join("");gyroButtons.innerHTML=["ON","OFF"].map(v=>`<button class="btn ${settings.gyroOn===v?"on":""}" onclick="setGyro('${v}')">${v}</button>`).join("");weaponButtons.innerHTML=Object.entries(WEAPONS).map(([k,w])=>`<button class="btn ${settings.weapon===k?"on":""}" onclick="setWeapon('${k}')">${w.name}</button>`).join("");}
-function renderReference(){}
+function renderButtons(){
+ presetButtons.innerHTML=`<button class="btn ${isReferenceMode?'primary':''}" onclick="applyReferenceBase()">シンプル感度（一括）</button>`;
+ fingerButtons.innerHTML=Object.keys(fingerModes).map(k=>`<button class="btn ${String(settings.fingerMode)===String(k)?"on":""}" onclick="setFingerMode(${k})">${k}本</button>`).join("");
+ gyroButtons.innerHTML=["ON","OFF"].map(v=>`<button class="btn ${settings.gyroOn===v?"on":""}" onclick="setGyro('${v}')">${v}</button>`).join("");
+ weaponButtons.innerHTML=Object.entries(WEAPONS).map(([k,w])=>{
+   const active = settings.weapon===k && !isReferenceMode;
+   return `<button class="btn ${active?"on":""}" onclick="setWeapon('${k}')">${w.name}</button>`;
+ }).join("");
+}
 function renderDistanceTicks(){const r=distanceRange();distanceTicks.innerHTML=r.ticks.map(v=>`<option value="${v}"></option>`).join("");distanceTicksLabel.innerHTML=r.ticks.map(v=>`<span>${v}m</span>`).join("");}
 function sync(){const f=fingerModes[settings.fingerMode],w=WEAPONS[settings.weapon],b=baseData();["redCam","redAds","redGyroCam","redGyro","finger","recoil","distance"].forEach(id=>document.getElementById(id).value=settings[id]??"");finger.disabled=settings.gyroOn==="OFF";redGyroCam.disabled=settings.gyroOn==="OFF";redGyro.disabled=settings.gyroOn==="OFF";fingerVal.textContent=settings.finger;recoilVal.textContent=settings.recoil;distanceVal.textContent=settings.distance+"m";fingerNote.textContent=`ジャイロ ${100-settings.finger}（ON/OFFで自動補正）`;fingerModeNote.textContent=f.note;recoilNote.textContent=`${w.name} 反動目安：${b.recoil} 前後`;weaponNote.textContent=`${w.name} / ${settings.gyroOn} / 基準：${w.base}`;distanceNote.textContent=settings.weapon==="SR"?"SRは50〜200mを10m刻みで自動補正します。":"SR以外は10〜150mを10m刻みで自動補正します。";renderDistanceTicks();}
 function baseLabelForWeapon(){
@@ -214,55 +247,119 @@ function calculate(){
  const adsPractical=practicalAdsAdjust();
  const baseLabel=baseLabelForWeapon();
 
- currentValues=list.map(s=>{
+ currentValues=list.filter(s=>!(settings.weapon==="AR556"&&s[0]==="8倍スコープ")).map(s=>{
    const label=s[0],m=s[1];
 
    // ②基準値に入力した数値は、該当基準項目へそのまま反映
    if(label===baseLabel){
      return {
        label,
-       cam:clamp(settings.redCam,1,200),
-       ads:clamp(settings.redAds,1,200),
-       gcam:settings.gyroOn==="OFF"?0:clamp(settings.redGyroCam,1,400),
-       gyro:settings.gyroOn==="OFF"?0:clamp(settings.redGyro,1,400)
+       cam:clamp(settings.redCam,0,400),
+       ads:clamp(settings.redAds,0,400),
+       gcam:settings.gyroOn==="OFF"?0:clamp(settings.redGyroCam,0,400),
+       gyro:settings.gyroOn==="OFF"?0:clamp(settings.redGyro,0,400)
      };
    }
 
    const offBonus=settings.gyroOn==="OFF"?10:0;
    return {
      label,
-     cam:clamp(settings.redCam*m+adj.cam+f.cam-distanceAdj,1,200),
-     ads:clamp(settings.redAds*m+f.ads+(settings.finger-70)*.22-distanceAdj+offBonus+adsPractical,1,200),
-     gcam:settings.gyroOn==="OFF"?0:clamp(settings.redGyroCam*m+f.gyro+(gyroRatio-.3)*75-distanceAdj*2,1,400),
-     gyro:settings.gyroOn==="OFF"?0:clamp(settings.redGyro*m+adj.gyro+f.gyro+(gyroRatio-.3)*95+recoilAdj-distanceAdj*3,1,400)
+     cam:clamp(settings.redCam*m+adj.cam+f.cam-distanceAdj,0,400),
+     ads:clamp(settings.redAds*m+f.ads+(settings.finger-70)*.22-distanceAdj+offBonus+adsPractical,0,400),
+     gcam:settings.gyroOn==="OFF"?0:clamp(settings.redGyroCam*m+f.gyro+(gyroRatio-.3)*75-distanceAdj*2,0,400),
+     gyro:settings.gyroOn==="OFF"?0:clamp(settings.redGyro*m+adj.gyro+f.gyro+(gyroRatio-.3)*95+recoilAdj-distanceAdj*3,0,400)
    };
+ });
+}
+function ensureReference8xVisible(){
+ if(!isReferenceMode)return;
+ if(currentValues.some(v=>v.label==="8倍スコープ"))return;
+ const m=0.17;
+ currentValues.push({
+   label:"8倍スコープ",
+   cam:clamp(settings.redCam*m,0,300),
+   ads:clamp(settings.redAds*m,0,300),
+   gcam:settings.gyroOn==="OFF"?0:clamp(settings.redGyroCam*m,0,400),
+   gyro:settings.gyroOn==="OFF"?0:clamp(settings.redGyro*m,0,400)
  });
 }
 function score(v,t){const l=level(v,t);return`<div class="score ${l}"><span>${v}</span><small>${statusText(l)}</small></div>`;}
 function renderTable(){const rows=currentValues.filter(v=>!(settings.weapon==="AR556"&&v.label==="8倍スコープ"&&v.cam===13&&v.ads===13));resultBody.innerHTML=rows.map(v=>`<tr><td>${v.label}</td><td>${score(v.cam,"normal")}</td><td>${score(v.ads,"normal")}</td><td>${score(v.gcam,"gyro")}</td><td>${score(v.gyro,"gyro")}</td></tr>`).join("");}
-function update(){normalize();renderButtons();sync();calculate();renderTable();copyArea.value=buildCopyText();renderProfiles();}
+function update(){normalize();renderButtons();sync();calculate();ensureReference8xVisible();renderTable();copyArea.value=buildCopyText();renderProfiles();}
 function applyReferenceBase(){
-  settings.fingerMode=2;
-  settings.weapon="AR556";
-  settings.gyroOn="OFF";
-  setBaseFromWeapon("AR556","off");
-  settings.finger=100;
-  update();
+ isReferenceMode=true;
+ settings.fingerMode=2;
+ settings.weapon="AR556";
+ settings.gyroOn="OFF";
+ if(typeof FINGER_BASE!=="undefined" && FINGER_BASE["2"]){
+   const fb=FINGER_BASE["2"]["OFF"] || FINGER_BASE["2"];
+   settings.redCam=fb.cam;
+   settings.redAds=fb.ads;
+   settings.redGyroCam=fb.gcam || 0;
+   settings.redGyro=fb.gyro || 0;
+   settings.finger=fb.finger || 100;
+ }
+ settings.recoil=WEAPONS.AR556.off.recoil;
+ update();
 }
 function setFingerMode(v){
  settings.fingerMode=v;
- applyFingerGyroBase();
+ if(isReferenceMode){
+   applyFingerGyroBase();
+ }else{
+   settings.finger=fingerModes[v].finger;
+   if(settings.gyroOn==="OFF")settings.finger=100;
+ }
  update();
 }
 function setGyro(v){
  settings.gyroOn=v;
- applyFingerGyroBase();
+ if(isReferenceMode && typeof applyFingerGyroBase==="function"){
+   applyFingerGyroBase();
+ }else{
+   setBaseFromWeapon(settings.weapon,v==="OFF"?"off":"on");
+ }
  update();
 }
-function setWeapon(v){settings.weapon=v;setBaseFromWeapon(v,currentMode());update();}
-function applyWeapon(v,g){settings.weapon=v;settings.gyroOn=g;setBaseFromWeapon(v,g==="OFF"?"off":"on");update();showTab("calc");}
-function resetAll(){settings={fingerMode:2,weapon:"AR556",gyroOn:"OFF",redCam:FINGER_BASE["2"]["OFF"].cam,redAds:FINGER_BASE["2"]["OFF"].ads,redGyroCam:0,redGyro:0,finger:100,recoil:WEAPONS.AR556.off.recoil,distance:DEFAULT_DISTANCE};update();}
+function setWeapon(v){
+ isReferenceMode=false;
+ settings.weapon=v;
+ setBaseFromWeapon(v,currentMode());
+ update();
+}
+function applyWeapon(v,g){
+ isReferenceMode=false;
+ settings.weapon=v;
+ settings.gyroOn=g;
+ setBaseFromWeapon(v,g==="OFF"?"off":"on");
+ update();
+ showTab("calc");
+}
+function resetAll(){
+ isReferenceMode=true;
+ applyReferenceBase();
+}
 ["redCam","redAds","redGyroCam","redGyro","finger","recoil","distance"].forEach(id=>document.getElementById(id).addEventListener("input",e=>{settings[id]=Number(e.target.value||0);update();}));
+let stepHoldTimer=null;
+let stepHoldInterval=null;
+function stepValue(id,delta){
+ const el=document.getElementById(id);
+ if(!el)return;
+ const v=clamp((Number(el.value)||0)+delta,0,400);
+ settings[id]=v;
+ el.value=v;
+ update();
+}
+function startStepHold(id,delta){
+ stopStepHold();
+ stepHoldTimer=setTimeout(()=>{
+   stepHoldInterval=setInterval(()=>stepValue(id,delta>0?10:-10),70);
+ },350);
+}
+function stopStepHold(){
+ if(stepHoldTimer){clearTimeout(stepHoldTimer);stepHoldTimer=null;}
+ if(stepHoldInterval){clearInterval(stepHoldInterval);stepHoldInterval=null;}
+}
 function buildCopyText(){return["FPS感度調整ツール タブレット版",`武器：${WEAPONS[settings.weapon].name}`,`基準：${WEAPONS[settings.weapon].base}`,`本数：${settings.fingerMode}本`,`ジャイロ：${settings.gyroOn}`,`指操作比率：${settings.finger}`,`反動：${settings.recoil}`,`距離：${settings.distance}m（自動補正）`,"","【カメラ】",...currentValues.map(v=>`${v.label}：${v.cam}`),"","【ADS】",...currentValues.map(v=>`${v.label}：${v.ads}`),"","【ジャイロカメラ】",...currentValues.map(v=>`${v.label}：${v.gcam}`),"","【ジャイロ】",...currentValues.map(v=>`${v.label}：${v.gyro}`)].join("\n");}
 async function copyAll(){try{await navigator.clipboard.writeText(buildCopyText());copyBtn.textContent="コピー済み";setTimeout(()=>copyBtn.textContent="全部コピー",1200);}catch(e){showTab("copy");copyArea.focus();copyArea.select();}}
 function saveProfile(){const name=profileName.value.trim()||`${settings.fingerMode}本_${WEAPONS[settings.weapon].name}_${settings.gyroOn}`;profiles.unshift({name,date:new Date().toLocaleString("ja-JP"),settings:{...settings}});profiles=profiles.slice(0,20);renderProfiles();}

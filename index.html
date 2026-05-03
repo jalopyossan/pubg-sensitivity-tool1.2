@@ -78,7 +78,7 @@ button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
 <div class="hero">
   <div class="logo">FPS SENSITIVITY TOOL</div>
   <h1>📲 FPS感度ツール</h1>
-  <div class="sub">タブレット・iPad専用 / 整数四捨五入 / 完全版</div>
+  <div class="sub">タブレット・iPad専用 / 完全最終版 / 整数四捨五入</div>
 </div>
 
 <div class="nav">
@@ -107,7 +107,7 @@ button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
   <div class="pick active modePick" data-v="unifiedMode" onclick="pickMode(this)">🟨 武器統一感度</div>
   <div class="pick modePick" data-v="balance" onclick="pickMode(this)">🟩 安定</div>
   <div class="pick modePick" data-v="precision" onclick="pickMode(this)">🟦 精密</div>
-  <div class="pick modePick" data-v="advanced" onclick="pickMode(this)">🟥 上級者</div>
+  <div class="pick modePick" data-v="advanced" onclick="pickMode(this)">🟥 アグレッシブ</div>
 </div>
 <div class="small" style="margin-top:10px">武器統一感度では武器選択を無効化し、武器補正なしで全スコープを表示します。</div>
 </div>
@@ -127,6 +127,11 @@ button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
 <div class="card main">
 <div class="title">完全感度一覧</div>
 <div class="tableWrap"><div class="tbl" id="table"></div></div>
+<div class="warn" style="margin-top:10px;">
+本ツールの数値は計算に基づく参考値です。<br>
+実際のプレイ環境やデバイス差、操作スタイルにより最適値は変動するため、<br>
+トレーニング場等で微調整のうえご使用ください。
+</div>
 <button onclick="copyResult()">結果をコピー</button>
 <button class="blue" onclick="saveHistory()">この設定を保存</button>
 <div class="warn" id="advice"></div>
@@ -152,7 +157,7 @@ button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
 <div class="card"><div class="title">使い方</div><div class="small">
 <b>iPhone / iPad：</b>Safariで開く → 共有 → ホーム画面に追加<br><br>
 <b>Android：</b>Chromeで開く → ︙ → ホーム画面に追加<br><br>
-ジャイロは「普通」を基準にしています。弱めは普通より低め、強めは普通より高めです。
+🟨武器統一感度：武器補正なし。🟩安定：実戦標準。🟦精密：命中率重視。🟥アグレッシブ：攻め・反応速度重視。
 </div></div>
 </section>
 </div>
@@ -160,7 +165,7 @@ button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
 <script>
 'use strict';
 
-const APP_VERSION = 'final-integer-complete-v1';
+const APP_VERSION = 'absolute-final-v1';
 const DEVICE = 'tablet';
 
 const state = {
@@ -185,15 +190,15 @@ const F = {
   finger: { '2':1.06, '3':.99, '4':.94, '5':.90 },
   gyro: { off:0, low:.85, mid:1.00, high:1.18 },
   style: {
-    normal: { cam:1, ads:1, gcam:1, gads:1, label:'標準' },
-    rush: { cam:1.08, ads:1.05, gcam:1.08, gads:1.05, label:'近距離強め' },
-    stable: { cam:.94, ads:.92, gcam:.96, gads:1.03, label:'安定重視' }
+    normal: { cam:1.00, ads:1.00, gcam:1.00, gads:1.00, label:'標準' },
+    rush: { cam:1.10, ads:1.06, gcam:1.16, gads:1.18, label:'近距離強め：反応速度重視' },
+    stable: { cam:.92, ads:.88, gcam:.88, gads:.96, label:'安定重視：ブレ抑制' }
   },
   mode: {
     unifiedMode: { cam:1, ads:1, gcam:1, gads:1, label:'武器統一感度：武器補正なし' },
     balance: { cam:1, ads:.95, gcam:1.02, gads:1.08, label:'安定：実戦標準' },
     precision: { cam:.95, ads:.88, gcam:1.00, gads:1.15, label:'精密：命中率重視' },
-    advanced: { cam:1.14, ads:1.04, gcam:1.22, gads:1.42, label:'上級者：プロ選手寄せ・反応速度重視' }
+    advanced: { cam:1.14, ads:1.04, gcam:1.22, gads:1.42, label:'アグレッシブ：プロ選手寄せ・反応速度重視' }
   },
   weapon: {
     ar556: { cam:.95, ads:.88, gcam:1.05, gads:1.22, label:'AR5.56：完全戦闘用' },

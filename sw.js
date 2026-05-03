@@ -1,4 +1,4 @@
-const CACHE_NAME='fps-tool-final-integer-complete-v1';
+const CACHE_NAME='fps-tool-absolute-final-v1';
 const ASSETS=['./','./index.html','./manifest.json','./icon.png'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS))));
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));

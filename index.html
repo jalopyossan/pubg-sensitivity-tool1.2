@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FPS感度ツール タブレット・iPad専用</title>
+<meta name="theme-color" content="#0f1115">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FPS感度">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+:root{
+  --bg:#0f1115;--card:#ffffff;--text:#111827;--muted:#6b7280;--gold:#b99155;
+  --cam:#111827;--ads:#2563eb;--gcam:#16a34a;--gads:#ea580c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#0f1115;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:12px;font-size:15px}
+.app{max-width:940px;margin:auto;padding-bottom:30px}
+.hero{text-align:center;padding:16px 10px}
+.logo{display:inline-block;padding:7px 13px;border:1px solid #b99155;border-radius:999px;color:#d6b06a;font-size:13px;letter-spacing:.08em}
+h1{font-size:26px;margin:12px 0 6px;font-weight:900}
+.sub{font-size:13px;color:#cbd5e1;line-height:1.65}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:sticky;top:0;z-index:10;background:rgba(15,17,21,.92);padding:8px 0}
+.nav button{margin:0;padding:12px 4px;border-radius:12px;background:#1f2937;border:1px solid #374151;color:#e5e7eb;font-size:13px;font-weight:900}
+.nav button.active{background:#b99155;color:#111}
+.card{background:#fff;color:#111827;border:1px solid #d1d5db;border-radius:16px;padding:14px;margin:12px 0;box-shadow:0 10px 25px rgba(0,0,0,.18)}
+.card.main{border:2px solid #b99155}
+.title{font-size:18px;font-weight:900;color:#8a6736;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:13px;color:#555;font-weight:800;margin:5px 0 6px}
+select{width:100%;padding:12px;border-radius:12px;background:#f8fafc;color:#111;border:1px solid #d1d5db;font-size:15px}
+input[type=range]{width:100%;accent-color:#b99155}
+.rangeBox{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:14px;padding:12px;margin:9px 0}
+.rangeLine{display:flex;justify-content:space-between;font-size:14px;font-weight:900}
+.val{font-size:21px;color:#8a6736}
+.modeGrid,.weaponGrid,.diagGrid{display:grid;gap:8px}
+.modeGrid{grid-template-columns:repeat(4,1fr)}
+.weaponGrid{grid-template-columns:repeat(5,1fr)}
+.diagGrid{grid-template-columns:repeat(5,1fr)}
+.pick{background:#f8fafc;color:#111;border:1px solid #d1d5db;border-radius:12px;padding:12px 6px;text-align:center;font-size:14px;font-weight:900}
+.pick.active{background:linear-gradient(135deg,#b99155,#d6b06a);color:#111;border-color:#8a6736}
+.pick.disabled{opacity:.35;pointer-events:none;filter:grayscale(.5)}
+.tableWrap{overflow-x:auto;border-radius:14px;border:1px solid #d1d5db;background:#fff}
+.tbl{display:grid;grid-template-columns:1.28fr repeat(4,1fr);min-width:700px}
+.cell{padding:10px 7px;border-right:1px solid #e5e7eb;border-bottom:1px solid #e5e7eb;text-align:center;font-size:13px;font-weight:800}
+.cell:nth-child(5n){border-right:none}
+.head{background:#f1f5f9;color:#111;font-weight:900}
+.labelCell{text-align:left;color:#111;font-weight:900}
+.rowEven{background:#fafafa}
+.rowOdd{background:#fff}
+.cam{color:var(--cam);font-weight:950;font-size:17px}
+.ads{color:var(--ads);font-weight:950;font-size:17px}
+.gcam{color:var(--gcam);font-weight:950;font-size:17px}
+.gads{color:var(--gads);font-weight:950;font-size:17px}
+.off{color:#9ca3af;font-weight:900}
+button{width:100%;border:none;border-radius:13px;background:#b99155;color:#111;padding:14px;font-size:15px;font-weight:900;margin-top:12px}
+button.blue{background:#f8fafc;color:#111;border:1px solid #d1d5db}
+button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
+.warn{background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;border-radius:13px;padding:11px;margin-top:12px;font-size:13px;line-height:1.6}
+.small{font-size:13px;color:#6b7280;line-height:1.65}
+.hidden{display:none}
+.historyItem{background:#f8fafc;border:1px solid #d1d5db;border-radius:13px;padding:12px;margin:8px 0}
+@media(max-width:620px){
+  .grid{grid-template-columns:1fr}
+  .modeGrid,.weaponGrid,.diagGrid{grid-template-columns:repeat(2,1fr)}
+  .nav{grid-template-columns:repeat(2,1fr)}
+  h1{font-size:24px}
+  .cell{font-size:14px}
+  .cam,.ads,.gcam,.gads{font-size:18px}
+  .pick{font-size:15px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="hero">
+  <div class="logo">FPS SENSITIVITY TOOL</div>
+  <h1>📲 FPS感度ツール</h1>
+  <div class="sub">タブレット・iPad専用 / 完全最終版 / 整数四捨五入</div>
+</div>
+
+<div class="nav">
+  <button class="active" onclick="tab('home',this)">ホーム</button>
+  <button onclick="tab('diagnosis',this)">診断</button>
+  <button onclick="tab('history',this)">履歴</button>
+  <button onclick="tab('help',this)">使い方</button>
+</div>
+
+<section id="home">
+<div class="card">
+<div class="title">自動最適化</div>
+<div class="grid">
+  <div><label>端末</label><select disabled><option>タブレット・iPad専用</option></select></div>
+  <div><label>指本数</label><select id="fingers" onchange="calc()"><option value="2">2本指</option><option value="3">3本指</option><option value="4">4本指</option><option value="5">5本指</option></select></div>
+  <div><label>ジャイロ</label><select id="gyro" onchange="calc()"><option value="off">無し</option><option value="low">弱め</option><option value="mid" selected>普通</option><option value="high">強め</option></select></div>
+  <div><label>プレイ傾向</label><select id="style" onchange="calc()"><option value="normal">標準</option><option value="rush">近距離強め</option><option value="stable">安定重視</option></select></div>
+</div>
+<div class="rangeBox"><div class="rangeLine"><span>距離入力</span><span class="val"><span id="distVal">80</span>m</span></div><input id="dist" type="range" min="10" max="200" value="80" oninput="calc()"></div>
+<div class="rangeBox"><div class="rangeLine"><span>感度スピード（全体）</span><span class="val"><span id="speedVal">100</span>%</span></div><input id="speed" type="range" min="80" max="140" value="100" oninput="calc()"><div class="small">全体の感度をまとめて上下。ジャイロは「普通」を基準に、弱め/強めで補正します。数値は整数四捨五入で表示します。</div></div>
+</div>
+
+<div class="card">
+<div class="title">モード切替</div>
+<div class="modeGrid">
+  <div class="pick active modePick" data-v="unifiedMode" onclick="pickMode(this)">🟨 武器統一感度</div>
+  <div class="pick modePick" data-v="balance" onclick="pickMode(this)">🟩 安定</div>
+  <div class="pick modePick" data-v="precision" onclick="pickMode(this)">🟦 精密</div>
+  <div class="pick modePick" data-v="advanced" onclick="pickMode(this)">🟥 アグレッシブ</div>
+</div>
+<div class="small" style="margin-top:10px">武器統一感度では武器選択を無効化し、武器補正なしで全スコープを表示します。</div>
+</div>
+
+<div class="card">
+<div class="title">武器選択</div>
+<div class="weaponGrid">
+  <div class="pick active weapon" data-v="ar556" onclick="pickWeapon(this)">AR5.56</div>
+  <div class="pick weapon" data-v="ar762" onclick="pickWeapon(this)">AR7.62</div>
+  <div class="pick weapon" data-v="smg" onclick="pickWeapon(this)">SMG</div>
+  <div class="pick weapon" data-v="dmr" onclick="pickWeapon(this)">DMR</div>
+  <div class="pick weapon" data-v="sr" onclick="pickWeapon(this)">SR</div>
+</div>
+<div class="small" style="margin-top:10px">AR/SMGは8倍非表示、DMR/SRは8倍表示。</div>
+</div>
+
+<div class="card main">
+<div class="title">完全感度一覧</div>
+<div class="tableWrap"><div class="tbl" id="table"></div></div>
+<div class="warn" style="margin-top:10px;">
+本ツールの数値は計算に基づく参考値です。<br>
+実際のプレイ環境やデバイス差、操作スタイルにより最適値は変動するため、<br>
+トレーニング場等で微調整のうえご使用ください。
+</div>
+<button onclick="copyResult()">結果をコピー</button>
+<button class="blue" onclick="saveHistory()">この設定を保存</button>
+<div class="warn" id="advice"></div>
+</div>
+</section>
+
+<section id="diagnosis" class="hidden">
+<div class="card"><div class="title">リコイル診断</div>
+<div class="diagGrid">
+  <div class="pick diag active" data-v="none" onclick="pickDiag(this)">問題なし</div>
+  <div class="pick diag" data-v="horizontal" onclick="pickDiag(this)">横に流れる</div>
+  <div class="pick diag" data-v="vertical" onclick="pickDiag(this)">上に跳ねる</div>
+  <div class="pick diag" data-v="shake" onclick="pickDiag(this)">ガタガタ</div>
+  <div class="pick diag" data-v="slow" onclick="pickDiag(this)">追いエイム遅い</div>
+</div><div class="warn">選ぶだけでホームの感度がリアルタイム補正されます。</div></div>
+</section>
+
+<section id="history" class="hidden">
+<div class="card"><div class="title">保存した感度</div><div id="historyList" class="small"></div><button class="danger" onclick="clearHistory()">履歴を全削除</button></div>
+</section>
+
+<section id="help" class="hidden">
+<div class="card"><div class="title">使い方</div><div class="small">
+<b>iPhone / iPad：</b>Safariで開く → 共有 → ホーム画面に追加<br><br>
+<b>Android：</b>Chromeで開く → ︙ → ホーム画面に追加<br><br>
+🟨武器統一感度：武器補正なし。🟩安定：実戦標準。🟦精密：命中率重視。🟥アグレッシブ：攻め・反応速度重視。
+</div></div>
+</section>
+</div>
+
+<script>
+'use strict';
+
+const APP_VERSION = 'absolute-final-v1';
+const DEVICE = 'tablet';
+
+const state = {
+  mode: 'unifiedMode',
+  weapon: 'ar556',
+  diag: 'none'
+};
+
+const baseScopes = [
+  ['TPP ノンスコ',1.00,1.00,1.16,1.00],
+  ['FPP ノンスコ',0.94,0.94,1.08,0.94],
+  ['レッドドット',0.68,0.62,1.10,0.92],
+  ['2倍',0.48,0.46,1.04,0.84],
+  ['3倍',0.36,0.34,0.98,0.76],
+  ['4倍',0.28,0.27,0.92,0.68],
+  ['6倍',0.20,0.20,0.84,0.56]
+];
+const eightScope = ['8倍',0.14,0.14,0.76,0.46];
+
+const F = {
+  device: { phone:1.05, tablet:.92 },
+  finger: { '2':1.06, '3':.99, '4':.94, '5':.90 },
+  gyro: { off:0, low:.85, mid:1.00, high:1.18 },
+  style: {
+    normal: { cam:1.00, ads:1.00, gcam:1.00, gads:1.00, label:'標準' },
+    rush: { cam:1.10, ads:1.06, gcam:1.16, gads:1.18, label:'近距離強め：反応速度重視' },
+    stable: { cam:.92, ads:.88, gcam:.88, gads:.96, label:'安定重視：ブレ抑制' }
+  },
+  mode: {
+    unifiedMode: { cam:1, ads:1, gcam:1, gads:1, label:'武器統一感度：武器補正なし' },
+    balance: { cam:1, ads:.95, gcam:1.02, gads:1.08, label:'安定：実戦標準' },
+    precision: { cam:.95, ads:.88, gcam:1.00, gads:1.15, label:'精密：命中率重視' },
+    advanced: { cam:1.14, ads:1.04, gcam:1.22, gads:1.42, label:'アグレッシブ：プロ選手寄せ・反応速度重視' }
+  },
+  weapon: {
+    ar556: { cam:.95, ads:.88, gcam:1.05, gads:1.22, label:'AR5.56：完全戦闘用' },
+    ar762: { cam:.93, ads:.84, gcam:1.06, gads:1.28, label:'AR7.62：AKM/Beryl/Groza統合' },
+    smg: { cam:1.25, ads:1.18, gcam:1.10, gads:.95, label:'SMG：近距離特化' },
+    dmr: { cam:.80, ads:.74, gcam:.92, gads:.90, label:'DMR：精密' },
+    sr: { cam:.70, ads:.66, gcam:.82, gads:.72, label:'SR：精密' }
+  },
+  diag: {
+    none: { cam:1, ads:1, gcam:1, gads:1, msg:'標準補正' },
+    horizontal: { cam:.98, ads:.92, gcam:1, gads:1.02, msg:'横ブレ対策' },
+    vertical: { cam:1, ads:.96, gcam:1.02, gads:1.12, msg:'縦反動対策' },
+    shake: { cam:.95, ads:.92, gcam:1.05, gads:.96, msg:'ガタつき対策' },
+    slow: { cam:1.08, ads:1.05, gcam:1.08, gads:1.02, msg:'追いエイム対策' }
+  }
+};
+
+let lastRows = [];
+
+function el(id) { return document.getElementById(id); }
+
+function formatValue(v) {
+  return Math.max(1, Math.min(400, Math.round(v)));
+}
+
+function distanceFactor(d) {
+  if (d <= 40) return { cam:1.12, ads:1.08, gcam:1.02, gads:.96 };
+  if (d <= 100) return { cam:1, ads:1, gcam:1, gads:1 };
+  return { cam:.86, ads:.88, gcam:.94, gads:.92 };
+}
+
+function currentScopes() {
+  const list = [...baseScopes];
+  if (state.mode === 'unifiedMode' || state.weapon === 'dmr' || state.weapon === 'sr') list.push(eightScope);
+  return list;
+}
+
+function calc() {
+  const fingers = el('fingers').value;
+  const gyro = el('gyro').value;
+  const styleKey = el('style').value;
+  const dist = Number(el('dist').value);
+  const speed = Number(el('speed').value);
+
+  el('distVal').textContent = dist;
+  el('speedVal').textContent = speed;
+
+  const isUnified = state.mode === 'unifiedMode';
+  const isNoGyro = gyro === 'off';
+  const df = distanceFactor(dist);
+  const md = F.mode[state.mode];
+  const st = F.style[styleKey];
+  const w = isUnified ? { cam:1, ads:1, gcam:1, gads:1, label:'武器統一感度' } : F.weapon[state.weapon];
+  const dg = F.diag[state.diag];
+
+  const base = 100 * (speed / 100) * F.device[DEVICE] * F.finger[fingers];
+
+  const camBase =
+    base * w.cam * md.cam * st.cam * dg.cam * df.cam * (isNoGyro ? 1.18 : 1);
+
+  const adsBase =
+    base * .95 * w.ads * md.ads * st.ads * dg.ads * df.ads * (isNoGyro ? 1.22 : 1);
+
+  const gcamBase =
+    100 * 2.15 * (speed / 100) * F.device[DEVICE] * F.finger[fingers] *
+    F.gyro[gyro] * w.gcam * md.gcam * st.gcam * dg.gcam * df.gcam;
+
+  const gadsBase =
+    100 * 2.35 * (speed / 100) * F.device[DEVICE] * F.finger[fingers] *
+    F.gyro[gyro] * w.gads * md.gads * st.gads * dg.gads * df.gads;
+
+  const rows = [['項目','カメラ','ADS','ジャイロカメラ','ジャイロADS']];
+  currentScopes().forEach(s => {
+    rows.push([
+      s[0],
+      formatValue(camBase * s[1]),
+      formatValue(adsBase * s[2]),
+      isNoGyro ? 'OFF' : formatValue(gcamBase * s[3]),
+      isNoGyro ? 'OFF' : formatValue(gadsBase * s[4])
+    ]);
+  });
+
+  lastRows = rows;
+  renderTable(rows);
+  updateWeaponState(isUnified);
+
+  const eightMsg = (isUnified || state.weapon === 'dmr' || state.weapon === 'sr') ? '8倍表示あり' : '8倍非表示';
+  el('advice').textContent = `${md.label} / ${st.label} / ${w.label} / ${dg.msg} / ${eightMsg} / ${dist}m / ${speed}%`;
+  saveState();
+}
+
+function renderTable(rows) {
+  const table = el('table');
+  table.innerHTML = '';
+  rows.forEach((row, r) => {
+    row.forEach((x, c) => {
+      const div = document.createElement('div');
+      div.textContent = x;
+      div.className = 'cell ';
+      if (r === 0) div.className += 'head ';
+      else {
+        div.className += (r % 2 === 0 ? 'rowEven ' : 'rowOdd ');
+        if (c === 0) div.className += 'labelCell ';
+        else if (x === 'OFF') div.className += 'off ';
+        else if (c === 1) div.className += 'cam ';
+        else if (c === 2) div.className += 'ads ';
+        else if (c === 3) div.className += 'gcam ';
+        else div.className += 'gads ';
+      }
+      table.appendChild(div);
+    });
+  });
+}
+
+function updateWeaponState(disabled) {
+  document.querySelectorAll('.weapon').forEach(btn => btn.classList.toggle('disabled', disabled));
+}
+
+function pickMode(node) {
+  document.querySelectorAll('.modePick').forEach(x => x.classList.remove('active'));
+  node.classList.add('active');
+  state.mode = node.dataset.v;
+  calc();
+}
+
+function pickWeapon(node) {
+  if (state.mode === 'unifiedMode') return;
+  document.querySelectorAll('.weapon').forEach(x => x.classList.remove('active'));
+  node.classList.add('active');
+  state.weapon = node.dataset.v;
+  calc();
+}
+
+function pickDiag(node) {
+  document.querySelectorAll('.diag').forEach(x => x.classList.remove('active'));
+  node.classList.add('active');
+  state.diag = node.dataset.v;
+  calc();
+}
+
+function tab(id, node) {
+  ['home','diagnosis','history','help'].forEach(x => el(x).classList.add('hidden'));
+  el(id).classList.remove('hidden');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  node.classList.add('active');
+  if (id === 'history') renderHistory();
+}
+
+function copyResult() {
+  let txt = `FPS感度ツール タブレット・iPad専用\n`;
+  lastRows.slice(1).forEach(r => {
+    txt += `${r[0]} / カメラ:${r[1]} ADS:${r[2]} ジャイロカメラ:${r[3]} ジャイロADS:${r[4]}\n`;
+  });
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => alert('コピーしました'));
+  else alert(txt);
+}
+
+function saveHistory() {
+  const name = prompt('保存名', '感度設定');
+  if (!name) return;
+  const key = `hist_${APP_VERSION}_tablet`;
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  list.unshift({ name, date:new Date().toLocaleString(), rows:lastRows });
+  localStorage.setItem(key, JSON.stringify(list.slice(0, 10)));
+  alert('保存しました');
+}
+
+function renderHistory() {
+  const key = `hist_${APP_VERSION}_tablet`;
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  el('historyList').innerHTML = list.length
+    ? list.map((h,i) => `<div class="historyItem"><b>${h.name}</b><br>${h.date}<button onclick="copyHist(${i})">コピー</button></div>`).join('')
+    : '履歴はまだありません。';
+}
+
+function copyHist(i) {
+  const key = `hist_${APP_VERSION}_tablet`;
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  const h = list[i];
+  let txt = h.name + '\n';
+  h.rows.slice(1).forEach(r => {
+    txt += `${r[0]} / カメラ:${r[1]} ADS:${r[2]} ジャイロカメラ:${r[3]} ジャイロADS:${r[4]}\n`;
+  });
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => alert('コピーしました'));
+  else alert(txt);
+}
+
+function clearHistory() {
+  localStorage.removeItem(`hist_${APP_VERSION}_tablet`);
+  renderHistory();
+}
+
+function saveState() {
+  localStorage.setItem(`state_${APP_VERSION}_tablet`, JSON.stringify({
+    mode:state.mode,
+    weapon:state.weapon,
+    diag:state.diag,
+    fingers:el('fingers').value,
+    gyro:el('gyro').value,
+    style:el('style').value,
+    dist:el('dist').value,
+    speed:el('speed').value
+  }));
+}
+
+function restore() {
+  el('fingers').value = '4';
+  el('gyro').value = 'mid';
+  el('style').value = 'normal';
+  el('dist').value = 80;
+  el('speed').value = 100;
+  state.mode = 'unifiedMode';
+  state.weapon = 'ar556';
+  state.diag = 'none';
+
+  const raw = localStorage.getItem(`state_${APP_VERSION}_tablet`);
+  if (raw) {
+    try {
+      const saved = JSON.parse(raw);
+      state.mode = saved.mode || 'unifiedMode';
+      state.weapon = saved.weapon || 'ar556';
+      state.diag = saved.diag || 'none';
+      el('fingers').value = saved.fingers || '4';
+      el('gyro').value = saved.gyro || 'mid';
+      el('style').value = saved.style || 'normal';
+      el('dist').value = saved.dist || 80;
+      el('speed').value = saved.speed || 100;
+    } catch(e) {}
+  }
+
+  document.querySelectorAll('.modePick').forEach(x => x.classList.toggle('active', x.dataset.v === state.mode));
+  document.querySelectorAll('.weapon').forEach(x => x.classList.toggle('active', x.dataset.v === state.weapon));
+  document.querySelectorAll('.diag').forEach(x => x.classList.toggle('active', x.dataset.v === state.diag));
+  calc();
+}
+
+restore();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+</script>
+</body>
+</html>

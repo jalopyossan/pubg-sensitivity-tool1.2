@@ -146,10 +146,21 @@ body.app-ready .app{animation:appFade .28s ease both}
   <div><label>端末</label><select disabled><option>タブレット・iPad専用</option></select></div>
   <div><label>指本数</label><select id="fingers" onchange="calc()"><option value="2">2本指</option><option value="3">3本指</option><option value="4">4本指</option><option value="5">5本指</option><option value="6">6本指</option></select></div>
   <div><label>ジャイロ</label><select id="gyro" onchange="calc()"><option value="off">無し</option><option value="low">弱め</option><option value="mid" selected>普通</option><option value="high">強め</option></select></div>
+
+  <div><label>指：ジャイロ比率</label><select id="ratioMode" onchange="calc()">
+    <option value="100_0">100：0（完全指）</option>
+    <option value="70_30">70：30（一般実戦）</option>
+    <option value="60_40">60：40（主流）</option>
+    <option value="50_50">50：50（猛者）</option>
+    <option value="40_60">40：60（大会寄り）</option>
+    <option value="30_70">30：70（高ジャイロ）</option>
+    <option value="0_100">0：100（完全ジャイロ）</option>
+  </select></div>
+  <div><label>モード</label><select id="mode" onchange="calc()"><option value="unifiedMode" selected>武器統一感度</option></select></div>
   <div><label>プレイ傾向</label><select id="style" onchange="calc()"><option value="normal">標準</option><option value="rush">近距離強め</option><option value="stable">安定重視</option></select></div>
 </div>
 <div class="rangeBox"><div class="rangeLine"><span>距離入力</span><span class="val"><span id="distVal">80</span>m</span></div><input id="dist" type="range" min="10" max="200" value="80" oninput="calc()"></div>
-<div class="rangeBox"><div class="rangeLine"><span>感度スピード（全体）</span><span class="val"><span id="speedVal">100</span>%</span></div><input id="speed" type="range" min="80" max="140" value="100" oninput="calc()"><div class="small">全体の感度をまとめて上下。ジャイロは「普通」を基準に、弱め/強めで補正します。数値は整数四捨五入で表示します。指本数別にジャイロ補正を最適化し、極端条件でも張り付きにくいよう最終調整しています。ADSはジャイロ弱めで少し高め、強めで少し低めになるよう逆連動します。</div></div>
+<div class="rangeBox"><div class="rangeLine"><span>感度スピード（全体）</span><span class="val"><span id="speedVal">100</span>%</span></div><input id="speed" type="range" min="80" max="140" value="100" oninput="calc()"><div class="small">全体の感度をまとめて上下。ジャイロは「普通」を基準に、弱め/強めで補正します。数値は整数四捨五入で表示します。指本数別補正と「指：ジャイロ」比率を統合。さらに理論と実戦の中間になるよう、倍率別ADS逆連動を自然な強さへ再調整しています。ADSはジャイロ弱めで少し高め、強めで少し低めになるよう逆連動します。</div></div>
 </div>
 
 <div class="card">
@@ -206,7 +217,7 @@ body.app-ready .app{animation:appFade .28s ease both}
 
 <section id="help" class="hidden">
 <div class="card"><div class="title">使い方</div><div class="small">
-<b>iPhone / iPad：</b>Safariで開く → 共有 → ホーム画面に追加<br><br>
+指：ジャイロ比率は、100：0が完全指、0：100が完全ジャイロです。武器統一感度を基準に、プレイスタイル・指：ジャイロ比率・診断で実戦向けに微調整します。指寄りはADS高め、ジャイロ寄りはADS低め＋ジャイロ高めになります。<br><br><b>iPhone / iPad：</b>Safariで開く → 共有 → ホーム画面に追加<br><br>
 <b>Android：</b>Chromeで開く → ︙ → ホーム画面に追加<br><br>
 🟨武器統一感度：武器補正なし。🟩安定：実戦標準。🟦精密：命中率重視。🟥アグレッシブ：攻め・反応速度重視。肩越し撃ちはTPP/FPP別で表示します。最終実戦バランス調整済み。強ジャイロ時の暴れを抑えつつ、近距離〜中距離まで自然に止めやすい感度になるよう最終最適化しています。
 </div></div>
@@ -248,10 +259,7 @@ const F = {
     stable: { cam:.94, ads:.90, gcam:.91, gads:.98, label:'安定重視：ブレ抑制' }
   },
   mode: {
-    unifiedMode: { cam:1, ads:1, gcam:1, gads:1, label:'武器統一感度：武器補正なし' },
-    balance: { cam:1, ads:.95, gcam:1.02, gads:1.08, label:'安定：実戦標準' },
-    precision: { cam:.95, ads:.88, gcam:1.00, gads:1.15, label:'精密：命中率重視' },
-    advanced: { cam:1.14, ads:1.04, gcam:1.18, gads:1.34, label:'アグレッシブ：実測ブレンド・反応速度重視' }
+    unifiedMode: { cam:1, ads:1, gcam:1, gads:1, label:'武器統一感度' }
   },
   weapon: {
     ar556: { cam:.95, ads:.88, gcam:1.05, gads:1.22, label:'AR5.56：完全戦闘用' },
@@ -270,9 +278,34 @@ const F = {
 };
 
 
+
+
+const ratioModeScale = {
+  '100_0': { ads:1.20, gyro:0.00, label:'100：0（完全指）' },
+  '70_30': { ads:1.10, gyro:0.82, label:'70：30（一般実戦）' },
+  '60_40': { ads:1.00, gyro:1.00, label:'60：40（主流）' },
+  '50_50': { ads:0.94, gyro:1.08, label:'50：50（猛者）' },
+  '40_60': { ads:0.88, gyro:1.16, label:'40：60（大会寄り）' },
+  '30_70': { ads:0.82, gyro:1.26, label:'30：70（高ジャイロ）' },
+  '0_100': { ads:0.72, gyro:1.32, label:'0：100（完全ジャイロ）' }
+};
+
+const adsGyroScopeScale = {
+  'TPP ノンスコ': 0.06,
+  'FPP ノンスコ': 0.06,
+  '肩越し TPP': 0.08,
+  '肩越し FPP': 0.08,
+  'レッドドット': 0.14,
+  '2倍': 0.17,
+  '3倍': 0.22,
+  '4倍': 0.26,
+  '6倍': 0.16,
+  '8倍': 0.10
+};
+
 const gyroScopeScale = {
-  'TPP ノンスコ': { low:0.95, mid:1.00, high:1.08 },
-  'FPP ノンスコ': { low:0.95, mid:1.00, high:1.07 },
+  'TPP ノンスコ': { low:0.95, mid:1.00, high:1.02 },
+  'FPP ノンスコ': { low:0.95, mid:1.00, high:1.02 },
   '肩越し TPP': { low:0.94, mid:1.00, high:1.10 },
   '肩越し FPP': { low:0.94, mid:1.00, high:1.08 },
   'レッドドット': { low:0.98, mid:1.00, high:1.03 },
@@ -297,8 +330,8 @@ let lastRows = [];
 function el(id) { return document.getElementById(id); }
 
 function formatValue(v) {
-  if (v > 300) {
-    v = 300 + (v - 300) * 0.42;
+  if (v > 360) {
+    v = 360 + (v - 360) * 0.28;
   }
   return Math.max(1, Math.min(400, Math.round(v)));
 }
@@ -319,6 +352,8 @@ function calc() {
   const fingers = el('fingers').value;
   const gyro = el('gyro').value;
   const styleKey = el('style').value;
+  const ratioMode = el('ratioMode') ? el('ratioMode').value : '50_50';
+  const ratio = ratioModeScale[ratioMode] || ratioModeScale['50_50'];
   const dist = Number(el('dist').value);
   const speed = Number(el('speed').value);
 
@@ -339,8 +374,7 @@ function calc() {
     base * w.cam * md.cam * st.cam * dg.cam * df.cam * (isNoGyro ? 1.18 : 1);
 
   const adsBase =
-    base * .95 * w.ads * md.ads * st.ads * dg.ads * df.ads *
-    (isNoGyro ? 1.22 : (1 - ((F.gyro[gyro] || 1) - 1) * 0.11));
+    base * .95 * w.ads * md.ads * st.ads * dg.ads * df.ads;
 
   const gcamBase =
     100 * 2.15 * (speed / 100) * F.device[DEVICE] * F.finger[fingers] *
@@ -357,12 +391,18 @@ function calc() {
         ? 1
         : ((gyroScopeScale[s[0]] || {})[gyro] || 1);
 
+    const adsGyroStrength = adsGyroScopeScale[s[0]] || 0.18;
+    const adsGyroAssist =
+      isNoGyro
+        ? 1.22
+        : (1 - ((F.gyro[gyro] || 1) - 1) * adsGyroStrength);
+
     rows.push([
       s[0],
       formatValue(camBase * s[1]),
-      formatValue(adsBase * s[2]),
-      isNoGyro ? 'OFF' : formatValue(gcamBase * s[3] * gyroScale),
-      isNoGyro ? 'OFF' : formatValue(gadsBase * s[4] * gyroScale)
+      formatValue(adsBase * s[2] * adsGyroAssist * ratio.ads),
+      (isNoGyro || ratio.gyro === 0) ? 'OFF' : formatValue(gcamBase * s[3] * gyroScale * ratio.gyro),
+      (isNoGyro || ratio.gyro === 0) ? 'OFF' : formatValue(gadsBase * s[4] * gyroScale * ratio.gyro)
     ]);
   });
 
@@ -371,7 +411,7 @@ function calc() {
   updateWeaponState(isUnified);
 
   const eightMsg = (isUnified || state.weapon === 'dmr' || state.weapon === 'sr') ? '8倍表示あり' : '8倍非表示';
-  el('advice').textContent = `${md.label} / ${st.label} / ${w.label} / ${dg.msg} / ${eightMsg} / ${dist}m / ${speed}%`;
+  el('advice').textContent = `${md.label} / ${st.label} / ${ratio.label} / ${w.label} / ${dg.msg} / ${eightMsg} / ${dist}m / ${speed}%`;
   saveState();
 }
 
@@ -485,7 +525,8 @@ function saveState() {
     gyro:el('gyro').value,
     style:el('style').value,
     dist:el('dist').value,
-    speed:el('speed').value
+    speed:el('speed').value,
+    ratioMode:el('ratioMode') ? el('ratioMode').value : '50_50'
   }));
 }
 
@@ -493,6 +534,7 @@ function restore() {
   el('fingers').value = '4';
   el('gyro').value = 'mid';
   el('style').value = 'normal';
+  if (el('ratioMode')) el('ratioMode').value = '50_50';
   el('dist').value = 80;
   el('speed').value = 100;
   state.mode = 'unifiedMode';
@@ -511,6 +553,7 @@ function restore() {
       el('style').value = saved.style || 'normal';
       el('dist').value = saved.dist || 80;
       el('speed').value = saved.speed || 100;
+      if (el('ratioMode')) el('ratioMode').value = saved.ratioMode || '50_50';
     } catch(e) {}
   }
 

@@ -14,5 +14,22 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "description": "FPS向け感度計算・ジャイロ・ADS・肩越し感度対応ツール",
+  "categories": [
+    "games",
+    "utilities"
+  ],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "screenshots": [
+    {
+      "src": "splash.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
   ]
 }

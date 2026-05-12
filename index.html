@@ -10,6 +10,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
+
+<link rel="preload" href="icon.png" as="image">
+<link rel="preload" href="splash.png" as="image">
+<link rel="apple-touch-startup-image" href="splash.png">
+
 <style>
 :root{
   --bg:#0f1115;--card:#ffffff;--text:#111827;--muted:#6b7280;--gold:#b99155;
@@ -71,14 +76,60 @@ button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
   .cam,.ads,.gcam,.gads{font-size:18px}
   .pick{font-size:15px}
 }
+
+/* ===== Premium PWA polish ===== */
+body.app-ready .app{animation:appFade .28s ease both}
+@keyframes appFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.splashScreen{
+  position:fixed;inset:0;z-index:9999;background:#0f1115;color:#fff;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  transition:opacity .35s ease,visibility .35s ease;
+}
+.splashScreen.hide{opacity:0;visibility:hidden}
+.splashLogo{
+  width:116px;height:116px;border-radius:28px;background:#fff;border:3px solid #b99155;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 18px 55px rgba(0,0,0,.35);
+  margin-bottom:18px;color:#111;font-weight:900;
+}
+.splashLogo::before{content:"+";font-size:58px;color:#b99155}
+.splashTitle{font-weight:900;font-size:22px;letter-spacing:.04em}
+.splashSub{font-size:13px;color:#cbd5e1;margin-top:8px}
+.installCard{
+  background:linear-gradient(135deg,#111827,#1f2937);
+  border:1px solid #374151;color:#e5e7eb;border-radius:16px;
+  padding:13px;margin:12px 0;font-size:13px;line-height:1.6;
+}
+.installCard b{color:#d6b06a}
+.installBtn{
+  background:linear-gradient(135deg,#b99155,#d6b06a)!important;
+  color:#111!important;margin-top:10px!important;
+}
+.pick,.nav button,button{transition:transform .12s ease,box-shadow .12s ease,filter .12s ease}
+.pick:active,.nav button:active,button:active{transform:scale(.97);filter:brightness(.96)}
+.cell{transition:background .18s ease}
+.tbl{animation:tableIn .18s ease both}
+@keyframes tableIn{from{opacity:.75}to{opacity:1}}
+
 </style>
 </head>
 <body>
+
+<div id="splashScreen" class="splashScreen">
+  <div class="splashLogo"></div>
+  <div class="splashTitle">FPS感度ツール</div>
+  <div class="splashSub">タブレット・iPad専用 / Premium PWA</div>
+</div>
+
 <div class="app">
 <div class="hero">
   <div class="logo">FPS SENSITIVITY TOOL</div>
   <h1>📲 FPS感度ツール</h1>
-  <div class="sub">タブレット・iPad専用 / 完全最終版 / 整数四捨五入</div>
+  <div class="sub">タブレット・iPad専用 / 実測ブレンド / ADSジャイロ逆連動 / 実測ブレンド / Premium PWA</div>
+</div>
+
+<div id="installCard" class="installCard">
+  <b>アプリ化対応：</b>ホーム画面に追加すると、ブラウザ感を抑えてアプリ風に起動できます。
+  <button id="installBtn" class="installBtn" style="display:none;">ホーム画面に追加</button>
 </div>
 
 <div class="nav">
@@ -93,12 +144,12 @@ button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
 <div class="title">自動最適化</div>
 <div class="grid">
   <div><label>端末</label><select disabled><option>タブレット・iPad専用</option></select></div>
-  <div><label>指本数</label><select id="fingers" onchange="calc()"><option value="2">2本指</option><option value="3">3本指</option><option value="4">4本指</option><option value="5">5本指</option></select></div>
+  <div><label>指本数</label><select id="fingers" onchange="calc()"><option value="2">2本指</option><option value="3">3本指</option><option value="4">4本指</option><option value="5">5本指</option><option value="6">6本指</option></select></div>
   <div><label>ジャイロ</label><select id="gyro" onchange="calc()"><option value="off">無し</option><option value="low">弱め</option><option value="mid" selected>普通</option><option value="high">強め</option></select></div>
   <div><label>プレイ傾向</label><select id="style" onchange="calc()"><option value="normal">標準</option><option value="rush">近距離強め</option><option value="stable">安定重視</option></select></div>
 </div>
 <div class="rangeBox"><div class="rangeLine"><span>距離入力</span><span class="val"><span id="distVal">80</span>m</span></div><input id="dist" type="range" min="10" max="200" value="80" oninput="calc()"></div>
-<div class="rangeBox"><div class="rangeLine"><span>感度スピード（全体）</span><span class="val"><span id="speedVal">100</span>%</span></div><input id="speed" type="range" min="80" max="140" value="100" oninput="calc()"><div class="small">全体の感度をまとめて上下。ジャイロは「普通」を基準に、弱め/強めで補正します。数値は整数四捨五入で表示します。</div></div>
+<div class="rangeBox"><div class="rangeLine"><span>感度スピード（全体）</span><span class="val"><span id="speedVal">100</span>%</span></div><input id="speed" type="range" min="80" max="140" value="100" oninput="calc()"><div class="small">全体の感度をまとめて上下。ジャイロは「普通」を基準に、弱め/強めで補正します。数値は整数四捨五入で表示します。指本数別にジャイロ補正を最適化し、極端条件でも張り付きにくいよう最終調整しています。ADSはジャイロ弱めで少し高め、強めで少し低めになるよう逆連動します。</div></div>
 </div>
 
 <div class="card">
@@ -121,14 +172,14 @@ button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
   <div class="pick weapon" data-v="dmr" onclick="pickWeapon(this)">DMR</div>
   <div class="pick weapon" data-v="sr" onclick="pickWeapon(this)">SR</div>
 </div>
-<div class="small" style="margin-top:10px">AR/SMGは8倍非表示、DMR/SRは8倍表示。</div>
+<div class="small" style="margin-top:10px">AR/SMGは8倍非表示、DMR/SRは8倍表示。肩越し撃ちはTPP/FPPを感度一覧に追加済み。ADSはジャイロ設定に逆連動するよう調整済み。</div>
 </div>
 
 <div class="card main">
 <div class="title">完全感度一覧</div>
 <div class="tableWrap"><div class="tbl" id="table"></div></div>
 <div class="warn" style="margin-top:10px;">
-本ツールの数値は計算に基づく参考値です。<br>
+本ツールの数値は計算値に実戦傾向を一部反映した参考値です。<br>
 実際のプレイ環境やデバイス差、操作スタイルにより最適値は変動するため、<br>
 トレーニング場等で微調整のうえご使用ください。
 </div>
@@ -157,7 +208,7 @@ button.danger{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca}
 <div class="card"><div class="title">使い方</div><div class="small">
 <b>iPhone / iPad：</b>Safariで開く → 共有 → ホーム画面に追加<br><br>
 <b>Android：</b>Chromeで開く → ︙ → ホーム画面に追加<br><br>
-🟨武器統一感度：武器補正なし。🟩安定：実戦標準。🟦精密：命中率重視。🟥アグレッシブ：攻め・反応速度重視。
+🟨武器統一感度：武器補正なし。🟩安定：実戦標準。🟦精密：命中率重視。🟥アグレッシブ：攻め・反応速度重視。肩越し撃ちはTPP/FPP別で表示します。最終実戦バランス調整済み。強ジャイロ時の暴れを抑えつつ、近距離〜中距離まで自然に止めやすい感度になるよう最終最適化しています。
 </div></div>
 </section>
 </div>
@@ -177,28 +228,30 @@ const state = {
 const baseScopes = [
   ['TPP ノンスコ',1.00,1.00,1.16,1.00],
   ['FPP ノンスコ',0.94,0.94,1.08,0.94],
-  ['レッドドット',0.68,0.62,1.10,0.92],
-  ['2倍',0.48,0.46,1.04,0.84],
-  ['3倍',0.36,0.34,0.98,0.76],
-  ['4倍',0.28,0.27,0.92,0.68],
-  ['6倍',0.20,0.20,0.84,0.56]
+  ['肩越し TPP',0.82,0.74,1.04,0.84],
+  ['肩越し FPP',0.78,0.70,0.98,0.80],
+  ['レッドドット',0.68,0.62,1.18,0.95],
+  ['2倍',0.48,0.46,1.02,0.78],
+  ['3倍',0.36,0.32,0.92,0.70],
+  ['4倍',0.28,0.28,0.80,0.64],
+  ['6倍',0.20,0.20,0.45,0.35]
 ];
-const eightScope = ['8倍',0.14,0.14,0.76,0.46];
+const eightScope = ['8倍',0.14,0.14,0.32,0.25];
 
 const F = {
   device: { phone:1.05, tablet:.92 },
-  finger: { '2':1.06, '3':.99, '4':.94, '5':.90 },
+  finger: { '2':1.06, '3':1.01, '4':.94, '5':.91, '6':.88 },
   gyro: { off:0, low:.85, mid:1.00, high:1.18 },
   style: {
     normal: { cam:1.00, ads:1.00, gcam:1.00, gads:1.00, label:'標準' },
-    rush: { cam:1.10, ads:1.06, gcam:1.16, gads:1.18, label:'近距離強め：反応速度重視' },
-    stable: { cam:.92, ads:.88, gcam:.88, gads:.96, label:'安定重視：ブレ抑制' }
+    rush: { cam:1.07, ads:1.03, gcam:1.10, gads:1.10, label:'近距離強め：反応速度重視' },
+    stable: { cam:.94, ads:.90, gcam:.91, gads:.98, label:'安定重視：ブレ抑制' }
   },
   mode: {
     unifiedMode: { cam:1, ads:1, gcam:1, gads:1, label:'武器統一感度：武器補正なし' },
     balance: { cam:1, ads:.95, gcam:1.02, gads:1.08, label:'安定：実戦標準' },
     precision: { cam:.95, ads:.88, gcam:1.00, gads:1.15, label:'精密：命中率重視' },
-    advanced: { cam:1.14, ads:1.04, gcam:1.22, gads:1.42, label:'アグレッシブ：プロ選手寄せ・反応速度重視' }
+    advanced: { cam:1.14, ads:1.04, gcam:1.18, gads:1.34, label:'アグレッシブ：実測ブレンド・反応速度重視' }
   },
   weapon: {
     ar556: { cam:.95, ads:.88, gcam:1.05, gads:1.22, label:'AR5.56：完全戦闘用' },
@@ -216,11 +269,37 @@ const F = {
   }
 };
 
+
+const gyroScopeScale = {
+  'TPP ノンスコ': { low:0.95, mid:1.00, high:1.08 },
+  'FPP ノンスコ': { low:0.95, mid:1.00, high:1.07 },
+  '肩越し TPP': { low:0.94, mid:1.00, high:1.10 },
+  '肩越し FPP': { low:0.94, mid:1.00, high:1.08 },
+  'レッドドット': { low:0.98, mid:1.00, high:1.03 },
+  '2倍': { low:0.97, mid:1.00, high:1.08 },
+  '3倍': { low:0.98, mid:1.00, high:1.04 },
+  '4倍': { low:0.99, mid:1.00, high:1.02 },
+  '6倍': { low:1.00, mid:1.00, high:0.94 },
+  '8倍': { low:1.00, mid:1.00, high:0.88 }
+};
+
+
+const gyroFingerScale = {
+  '2': { gcam:1.02, gads:1.02 },
+  '3': { gcam:1.02, gads:1.03 },
+  '4': { gcam:1.00, gads:1.00 },
+  '5': { gcam:0.97, gads:0.96 },
+  '6': { gcam:0.95, gads:0.94 }
+};
+
 let lastRows = [];
 
 function el(id) { return document.getElementById(id); }
 
 function formatValue(v) {
+  if (v > 300) {
+    v = 300 + (v - 300) * 0.42;
+  }
   return Math.max(1, Math.min(400, Math.round(v)));
 }
 
@@ -260,24 +339,30 @@ function calc() {
     base * w.cam * md.cam * st.cam * dg.cam * df.cam * (isNoGyro ? 1.18 : 1);
 
   const adsBase =
-    base * .95 * w.ads * md.ads * st.ads * dg.ads * df.ads * (isNoGyro ? 1.22 : 1);
+    base * .95 * w.ads * md.ads * st.ads * dg.ads * df.ads *
+    (isNoGyro ? 1.22 : (1 - ((F.gyro[gyro] || 1) - 1) * 0.11));
 
   const gcamBase =
     100 * 2.15 * (speed / 100) * F.device[DEVICE] * F.finger[fingers] *
-    F.gyro[gyro] * w.gcam * md.gcam * st.gcam * dg.gcam * df.gcam;
+    F.gyro[gyro] * (gyroFingerScale[fingers]?.gcam || 1) * w.gcam * md.gcam * st.gcam * dg.gcam * df.gcam;
 
   const gadsBase =
     100 * 2.35 * (speed / 100) * F.device[DEVICE] * F.finger[fingers] *
-    F.gyro[gyro] * w.gads * md.gads * st.gads * dg.gads * df.gads;
+    F.gyro[gyro] * (gyroFingerScale[fingers]?.gads || 1) * w.gads * md.gads * st.gads * dg.gads * df.gads;
 
   const rows = [['項目','カメラ','ADS','ジャイロカメラ','ジャイロADS']];
   currentScopes().forEach(s => {
+    const gyroScale =
+      gyro === 'off'
+        ? 1
+        : ((gyroScopeScale[s[0]] || {})[gyro] || 1);
+
     rows.push([
       s[0],
       formatValue(camBase * s[1]),
       formatValue(adsBase * s[2]),
-      isNoGyro ? 'OFF' : formatValue(gcamBase * s[3]),
-      isNoGyro ? 'OFF' : formatValue(gadsBase * s[4])
+      isNoGyro ? 'OFF' : formatValue(gcamBase * s[3] * gyroScale),
+      isNoGyro ? 'OFF' : formatValue(gadsBase * s[4] * gyroScale)
     ]);
   });
 
@@ -434,6 +519,30 @@ function restore() {
   document.querySelectorAll('.diag').forEach(x => x.classList.toggle('active', x.dataset.v === state.diag));
   calc();
 }
+
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'block';
+});
+document.addEventListener('click', async (e) => {
+  if (e.target && e.target.id === 'installBtn' && deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    e.target.style.display = 'none';
+  }
+});
+window.addEventListener('load', () => {
+  document.body.classList.add('app-ready');
+  setTimeout(() => {
+    const s = document.getElementById('splashScreen');
+    if (s) s.classList.add('hide');
+  }, 420);
+});
 
 restore();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});

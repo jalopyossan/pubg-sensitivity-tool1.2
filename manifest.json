@@ -1,35 +1,15 @@
 {
-  "name": "FPS感度ツール タブレット・iPad専用",
+  "name": "FPS感度ツール タブレット版",
   "short_name": "FPS感度",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
-  "background_color": "#0f1115",
-  "theme_color": "#0f1115",
-  "orientation": "portrait",
+  "background_color": "#f6f6f7",
+  "theme_color": "#f6f6f7",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "description": "FPS向け感度計算・ジャイロ・ADS・肩越し感度対応ツール",
-  "categories": [
-    "games",
-    "utilities"
-  ],
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
-  "screenshots": [
-    {
-      "src": "splash.png",
-      "sizes": "1170x2532",
-      "type": "image/png",
-      "form_factor": "narrow"
+      "type": "image/png"
     }
   ]
 }
